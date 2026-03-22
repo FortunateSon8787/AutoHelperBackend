@@ -48,3 +48,7 @@ secrets.json
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Temp git dir
+.git_old/
+.claude/
