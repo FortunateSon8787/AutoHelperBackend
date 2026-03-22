@@ -1,6 +1,10 @@
+using System.Text;
 using AutoHelper.Api.Common;
 using AutoHelper.Application;
 using AutoHelper.Infrastructure;
+using AutoHelper.Infrastructure.Security;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AutoHelper.Api.Extensions;
 
@@ -36,10 +40,29 @@ public static class WebApplicationBuilderExtensions
                     .AllowCredentials());
         });
 
-        // Auth — JWT Bearer
+        // Auth — JWT Bearer with symmetric signing key from configuration
+        var jwtSecret = configuration[$"{JwtSettings.SectionName}:Secret"]
+            ?? throw new InvalidOperationException("JWT Secret is not configured.");
+
+        var jwtIssuer = configuration[$"{JwtSettings.SectionName}:Issuer"] ?? "autohelper-api";
+        var jwtAudience = configuration[$"{JwtSettings.SectionName}:Audience"] ?? "autohelper-api";
+
         services
-            .AddAuthentication()
-            .AddJwtBearer();
+            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
+                    ValidateIssuer = true,
+                    ValidIssuer = jwtIssuer,
+                    ValidateAudience = true,
+                    ValidAudience = jwtAudience,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
 
         services.AddAuthorization();
 

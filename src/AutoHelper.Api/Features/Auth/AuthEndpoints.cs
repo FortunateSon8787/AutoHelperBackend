@@ -1,3 +1,4 @@
+using AutoHelper.Application.Features.Auth.Login;
 using AutoHelper.Application.Features.Auth.Register;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,12 @@ public static class AuthEndpoints
             .Produces<RegisterResponse>(StatusCodes.Status201Created)
             .ProducesValidationProblem()
             .ProducesProblem(StatusCodes.Status409Conflict);
+
+        group.MapPost("/login", Login)
+            .WithSummary("Authenticate with email and password, receive JWT tokens")
+            .Produces<TokenResponse>(StatusCodes.Status200OK)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status401Unauthorized);
     }
 
     // ─── Handlers ─────────────────────────────────────────────────────────────
@@ -34,6 +41,19 @@ public static class AuthEndpoints
             });
 
         return Results.Created($"/api/customers/{result.Value}", new RegisterResponse(result.Value));
+    }
+
+    private static async Task<IResult> Login(
+        [FromBody] LoginCommand command,
+        ISender mediator,
+        CancellationToken ct)
+    {
+        var result = await mediator.Send(command, ct);
+
+        if (result.IsFailure)
+            return Results.Unauthorized();
+
+        return Results.Ok(result.Value);
     }
 
     // ─── Response DTOs ────────────────────────────────────────────────────────
