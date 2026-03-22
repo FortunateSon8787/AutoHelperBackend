@@ -1,0 +1,7 @@
+{
+  "dotnet.defaultSolution": "AutoHelper.sln",
+  "editor.formatOnSave": true,
+  "[csharp]": {
+    "editor.defaultFormatter": "ms-dotnettools.csharp"
+  }
+}
