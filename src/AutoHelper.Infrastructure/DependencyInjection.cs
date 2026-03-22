@@ -1,6 +1,8 @@
 using AutoHelper.Application.Common.Interfaces;
 using AutoHelper.Infrastructure.Common;
 using AutoHelper.Infrastructure.Persistence;
+using AutoHelper.Infrastructure.Persistence.Repositories;
+using AutoHelper.Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +29,12 @@ public static class DependencyInjection
         // Current user
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUser, CurrentUser>();
+
+        // Repositories
+        services.AddScoped<ICustomerRepository, CustomerRepository>();
+
+        // Security
+        services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
         // Storage (S3/MinIO) — placeholder, implement S3StorageService when needed
         // services.AddScoped<IStorageService, S3StorageService>();
