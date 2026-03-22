@@ -26,7 +26,7 @@ public sealed class LoginCommandHandler(
         var accessToken = jwtTokenService.GenerateAccessToken(customer);
         var rawRefreshToken = jwtTokenService.GenerateRefreshToken();
 
-        var refreshToken = RefreshToken.Create(
+        var refreshToken = global::AutoHelper.Domain.Customers.RefreshToken.Create(
             customerId: customer.Id,
             token: rawRefreshToken,
             expiryDays: jwtTokenService.RefreshTokenExpiryDays);
