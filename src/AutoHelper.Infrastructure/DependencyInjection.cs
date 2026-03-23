@@ -6,6 +6,7 @@ using AutoHelper.Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace AutoHelper.Infrastructure;
 
@@ -32,9 +33,14 @@ public static class DependencyInjection
 
         // Repositories
         services.AddScoped<ICustomerRepository, CustomerRepository>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
         // Security
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
+
+        // JWT
+        services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
+        services.AddSingleton<IJwtTokenService, JwtTokenService>();
 
         // Storage (S3/MinIO) — placeholder, implement S3StorageService when needed
         // services.AddScoped<IStorageService, S3StorageService>();
