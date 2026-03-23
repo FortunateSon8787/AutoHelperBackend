@@ -38,8 +38,8 @@ public class CustomerTests
         var customer = Customer.CreateWithPassword("Alice", "alice@test.com", "hash");
 
         // Assert
-        customer.DomainEvents.ShouldContain(e =>
-            e is CustomerRegisteredEvent evt && evt.Email == "alice@test.com");
+        customer.DomainEvents.OfType<CustomerRegisteredEvent>()
+            .ShouldContain(evt => evt.Email == "alice@test.com");
     }
 
     // ─── CreateWithGoogle ─────────────────────────────────────────────────────
