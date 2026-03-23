@@ -1,5 +1,6 @@
 using AutoHelper.Application.Common.Interfaces;
 using AutoHelper.Domain.Common;
+using AutoHelper.Domain.Customers;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +11,9 @@ public sealed class AppDbContext(
     IPublisher publisher)
     : DbContext(options), IUnitOfWork
 {
+    public DbSet<Customer> Customers => Set<Customer>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // Auto-discovers all IEntityTypeConfiguration<T> in this assembly
