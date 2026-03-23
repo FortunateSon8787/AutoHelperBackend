@@ -1,4 +1,5 @@
 using AutoHelper.Api.Extensions;
+using AutoHelper.Api.Features.Auth;
 using Scalar.AspNetCore;
 using Serilog;
 
@@ -38,9 +39,8 @@ try
     // Health check endpoint
     app.MapHealthChecks("/health");
 
-    // Feature endpoints registered here as the solution grows
-    // e.g.: app.MapAuthEndpoints();
-    //       app.MapVehicleEndpoints();
+    // Feature endpoints
+    app.MapAuthEndpoints();
 
     await app.RunAsync();
 }
